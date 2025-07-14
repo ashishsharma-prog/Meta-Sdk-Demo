@@ -86,7 +86,7 @@ const PrivacyConsent = ({ userData, onAllowTracking }) => {
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Perfect!</h2>
             <p className="text-gray-600 mb-6">
-              Thanks for helping us personalize your experience, {userData?.name}!
+              Thanks for helping us personalize your experience
             </p>
             <div className="animate-pulse">
               <div className="h-2 bg-gradient-to-r from-green-500 to-blue-500 rounded-full"></div>

@@ -60,7 +60,7 @@ const InputField = ({ name, type, placeholder, icon: Icon, label, errors, touche
   );
 };
 
-const OnboardingForm = ({ setUserData }) => {
+const OnboardingForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -146,7 +146,6 @@ const OnboardingForm = ({ setUserData }) => {
 
     // If no errors, proceed
     if (Object.keys(newErrors).length === 0) {
-      setUserData(formData);
       navigate('/privacy-consent');
     }
   };
