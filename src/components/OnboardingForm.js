@@ -2,6 +2,64 @@ import React, { useState } from 'react';
 import { User, Mail, Phone, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+const getFieldStatus = (fieldName, errors, touched, formData, validateField) => {
+  if (errors[fieldName]) return 'error';
+  if (touched[fieldName] && formData[fieldName] && !errors[fieldName]) return 'success';
+  return 'default';
+};
+
+const InputField = ({ name, type, placeholder, icon: Icon, label, errors, touched, formData, handleChange, handleBlur, validateField }) => {
+  const status = getFieldStatus(name, errors, touched, formData, validateField);
+
+  return (
+    <div className="space-y-2">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Icon className={`h-5 w-5 ${
+            status === 'error' ? 'text-red-400' : 
+            status === 'success' ? 'text-green-400' : 'text-gray-400'
+          }`} />
+        </div>
+        <input
+          id={name}
+          type={type}
+          name={name}
+          value={formData[name]}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
+            status === 'error' 
+              ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
+              : status === 'success'
+              ? 'border-green-300 focus:ring-green-500 focus:border-green-500'
+              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+          }`}
+        />
+        {status === 'success' && (
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <CheckCircle className="h-5 w-5 text-green-400" />
+          </div>
+        )}
+        {status === 'error' && (
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <AlertCircle className="h-5 w-5 text-red-400" />
+          </div>
+        )}
+      </div>
+      {errors[name] && (
+        <p className="text-sm text-red-600 flex items-center gap-1">
+          <AlertCircle className="h-4 w-4" />
+          {errors[name]}
+        </p>
+      )}
+    </div>
+  );
+};
+
 const OnboardingForm = ({ setUserData }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -93,64 +151,6 @@ const OnboardingForm = ({ setUserData }) => {
     }
   };
 
-  const getFieldStatus = (fieldName) => {
-    if (errors[fieldName]) return 'error';
-    if (touched[fieldName] && formData[fieldName] && !errors[fieldName]) return 'success';
-    return 'default';
-  };
-
-  const InputField = ({ name, type, placeholder, icon: Icon, label }) => {
-    const status = getFieldStatus(name);
-    
-    return (
-      <div className="space-y-2">
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-          {label}
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Icon className={`h-5 w-5 ${
-              status === 'error' ? 'text-red-400' : 
-              status === 'success' ? 'text-green-400' : 'text-gray-400'
-            }`} />
-          </div>
-          <input
-            id={name}
-            type={type}
-            name={name}
-            value={formData[name]}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder={placeholder}
-            className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
-              status === 'error' 
-                ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                : status === 'success'
-                ? 'border-green-300 focus:ring-green-500 focus:border-green-500'
-                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-            }`}
-          />
-          {status === 'success' && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <CheckCircle className="h-5 w-5 text-green-400" />
-            </div>
-          )}
-          {status === 'error' && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <AlertCircle className="h-5 w-5 text-red-400" />
-            </div>
-          )}
-        </div>
-        {errors[name] && (
-          <p className="text-sm text-red-600 flex items-center gap-1">
-            <AlertCircle className="h-4 w-4" />
-            {errors[name]}
-          </p>
-        )}
-      </div>
-    );
-  };
-
   const isFormValid = Object.keys(formData).every(key => 
     formData[key].trim() !== '' && !validateField(key, formData[key])
   );
@@ -175,6 +175,12 @@ const OnboardingForm = ({ setUserData }) => {
               placeholder="Enter your full name"
               icon={User}
               label="Full Name"
+              errors={errors}
+              touched={touched}
+              formData={formData}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              validateField={validateField}
             />
 
             <InputField
@@ -183,6 +189,12 @@ const OnboardingForm = ({ setUserData }) => {
               placeholder="Enter your email address"
               icon={Mail}
               label="Email Address"
+              errors={errors}
+              touched={touched}
+              formData={formData}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              validateField={validateField}
             />
 
             <InputField
@@ -191,6 +203,12 @@ const OnboardingForm = ({ setUserData }) => {
               placeholder="Enter your phone number"
               icon={Phone}
               label="Phone Number"
+              errors={errors}
+              touched={touched}
+              formData={formData}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              validateField={validateField}
             />
             <button
               type="submit"
